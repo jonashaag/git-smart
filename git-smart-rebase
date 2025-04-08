@@ -3,21 +3,23 @@
 set -euo pipefail
 
 current_branch="$(git symbolic-ref --short HEAD)"
+current_branch_sha="$(git rev-parse --short HEAD)"
 upstream="${1:-main}"
 merge_base="$(git merge-base HEAD "$upstream")"
 if [ "$(git rev-list --count "$merge_base"..)" -gt 1 ]; then
-  echo >&2 "Rebasing $current_branch onto $upstream"
+  echo >&2 "Rebasing $current_branch ($current_branch_sha) onto $upstream"
   echo >&2 "Commits to be rebased:"
   git log --oneline "$merge_base"..
   while true; do
     read -r -p "Do you want to squash the commits before rebasing? [s]quash / [i]nteractive rebase / [n]o / [q]uit " res
     case $res in
       s)
-        GIT_SEQUENCE_EDITOR="sed -i '' -e '1!s/^pick /squash /g'" git rebase -i "$merge_base"
+        git rst "$merge_base" # TODO
+        git merge --squash "$current_branch_sha"
+        git commit --no-edit
         break
         ;;
       i)
-        git rebase -i "$merge_base"
         break
         ;;
       n)
