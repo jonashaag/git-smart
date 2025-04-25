@@ -47,7 +47,7 @@ while true; do
       exec git push --force
       break
       ;;
-    n)
+    q)
       exit 1
       ;;
     *) ;;
