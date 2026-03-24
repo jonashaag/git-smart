@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 current_branch="$(git symbolic-ref --short HEAD)"
 current_branch_sha="$(git rev-parse --short HEAD)"
 upstream="${1:-main}"
@@ -14,7 +16,7 @@ if [ "$(git rev-list --count "$merge_base"..)" -gt 1 ]; then
     read -r -p "Do you want to squash the commits before rebasing? [s]quash / [i]nteractive rebase / [n]o / [q]uit " res
     case $res in
       s)
-        git rst "$merge_base" # TODO
+        "$SCRIPT_DIR"/git-rst "$merge_base"
         git merge --squash "$current_branch_sha"
         git commit --no-edit
         break

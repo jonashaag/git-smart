@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 function log {
   echo >&2 "[smart-push]" "$@"
 }
@@ -35,8 +37,8 @@ while true; do
   read -r -p "Select action: [p] smart-pull, then smart-push / [f] push --force-with-lease / [ff] push --force / [q]uit " res
   case $res in
     p)
-      git smart-pull
-      git smart-push
+      "$SCRIPT_DIR"/git-smart-pull
+      "$SCRIPT_DIR"/git-smart-push
       break
       ;;
     f)
